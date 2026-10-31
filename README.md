@@ -18,7 +18,7 @@ Executable commands:
 ```
 
 ## Windows build
-Use Visual Studio 2022 Build Tools or another CMake-compatible MSVC installation and run `scripts/build_windows.bat` from a Developer Command Prompt. The script creates `dist/Launch.exe` as a renamed CLI executable and copies frontend/data. This is not yet the required integrated GUI launcher. Validate on a clean Windows 11 x64 system before submission.
+Use Visual Studio 2022 Build Tools or another CMake-compatible MSVC installation and run `scripts/build_windows.bat` from a Developer Command Prompt. The script builds `dist/bin/uew.exe` and copies frontend/data. It deliberately does not rename a CLI executable to `Launch.exe`; a true integrated GUI launcher still needs to be implemented and verified. Validate on a clean Windows 11 x64 system before submission.
 
 ## Modules
 See `docs/architecture.md`, `docs/embedded_interface.md` and `docs/limitations.md`.
