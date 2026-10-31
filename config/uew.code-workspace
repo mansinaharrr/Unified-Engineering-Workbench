@@ -1,0 +1,1 @@
+{"folders":[{"path":".."}],"settings":{"cmake.buildDirectory":"${workspaceFolder}/build"},"launch":{"version":"0.2.0","configurations":[{"name":"UEW C++ Core","type":"cppdbg","request":"launch","program":"${workspaceFolder}/build/uew","args":["summary"],"cwd":"${workspaceFolder}","MIMode":"gdb"}]}}

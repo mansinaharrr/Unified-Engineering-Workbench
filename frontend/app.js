@@ -1,0 +1,5 @@
+const pages=[...document.querySelectorAll('.page')], nav=[...document.querySelectorAll('nav button')];
+function show(id){pages.forEach(p=>p.classList.toggle('show',p.id===id));nav.forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.querySelector('#heading').textContent=nav.find(b=>b.dataset.page===id)?.textContent||'Overview'}
+nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
+const mesh=[['10','0.0125'],['20','0.003125'],['40','0.00078125'],['80','0.0001953125']];document.querySelector('#mesh').innerHTML=mesh.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
+const c=document.querySelector('#thermalChart'),ctx=c.getContext('2d');ctx.strokeStyle='#65a9ff';ctx.lineWidth=3;ctx.beginPath();for(let i=0;i<=100;i++){let x=i/100,T=100-80*x+500*x*(1-x),px=45+x*760,py=260-(T-20)/100*220;i?ctx.lineTo(px,py):ctx.moveTo(px,py)}ctx.stroke();ctx.fillStyle='#91a3bb';ctx.font='12px Arial';ctx.fillText('Position x (m)',390,290);ctx.fillText('Temperature (°C)',10,18);

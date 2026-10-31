@@ -1,0 +1,5 @@
+STM32 Nucleo (mock) | Microcontroller | USB CDC telemetry; 3.3 V GPIO; simulated
+Basys 3 (mock) | FPGA | JTAG configuration/debug; 3.3 V I/O; simulated
+USB-JTAG adapter (mock) | Debug adapter | TCK/TMS/TDI/TDO; host USB; simulated
+SIMULATED telemetry from STM32 Nucleo (mock): status=OK, sequence=1
+Recoverable timeout: no telemetry received; device remains disconnected.

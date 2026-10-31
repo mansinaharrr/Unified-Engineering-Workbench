@@ -1,0 +1,4 @@
+N=10 midpoint_max_error_C=1.25
+N=20 midpoint_max_error_C=0.3125
+N=40 midpoint_max_error_C=0.078125
+N=80 midpoint_max_error_C=0.01953125

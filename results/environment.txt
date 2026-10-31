@@ -1,0 +1,17 @@
+Execution environment
+OS: Linux-6.18.57-x86_64-with-glibc2.41
+CPU: AMD EPYC 9V74 80-Core Processor
+Logical CPUs visible: 5
+RAM: 5.81 GiB
+Compiler: GNU C++ 14.2.0 (g++), C++17
+Build: CMake Release, -O2
+Benchmark workload: 1,000 independent cases, 80 elements/case
+Fixed seed: 20261031
+Warm-up: solver reference results precomputed before timed repetitions; 5 timed repetitions per worker count
+Timing excludes compilation and file output; worker pool creation is included.
+Benchmark output:
+workers,median_ms,speedup,efficiency,max_difference_C
+1,1.52845,1,1,0
+2,1.28022,1.19389,0.596946,0
+4,0.683254,2.23701,0.559252,0
+
