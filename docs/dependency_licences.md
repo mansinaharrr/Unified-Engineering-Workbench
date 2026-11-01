@@ -1,64 +1,64 @@
-DEPENDENCIES AND LICENCES
+\# Dependencies, Versions and Licence Information
 
 
 
-1\. C++ AND BUILD TOOLS
+\## Runtime Dependencies
 
 
 
-\- C++17 standard library: Used for the core application.
+\- C++17 standard library.
 
-\- CMake: Used for project configuration and build management.
+\- C++ threading support.
 
-\- Microsoft Visual Studio C++ Build Tools: Used to compile the Windows application.
+\- Windows API and ShellExecute for the Windows launcher.
 
-\- Windows SDK: Required for Windows-specific launcher functionality.
+\- A default web browser to display the local dashboard.
 
-\- Threads: Used for parallel execution in the performance module.
-
-
-
-2\. FRONTEND TECHNOLOGIES
+\- HTML, CSS and JavaScript browser support.
 
 
 
-\- HTML: Used for dashboard structure.
-
-\- CSS: Used for dashboard styling.
-
-\- JavaScript: Used for dashboard functionality.
+The packaged C++ application does not require third-party C++ runtime libraries.
 
 
 
-3\. DEVELOPMENT AND PLOTTING TOOLS
+\## Build Dependencies
 
 
 
-\- Python, Matplotlib and NumPy were used for development and plotting tasks, if applicable to the included scripts.
+\- CMake 3.20 or later.
 
-\- These are not runtime dependencies of the C++ executable.
+\- C++17-compatible compiler.
 
+\- Visual Studio C++ Build Tools.
 
+\- Windows SDK.
 
-4\. HARDWARE REQUIREMENTS
+\- VS Code is optional.
 
-
-
-No physical embedded hardware is required to run the current prototype. Hardware interfaces are simulated in software.
-
-
-
-5\. LICENCE INFORMATION
+\- Microsoft's C/C++ extension is required only for the VS Code debugging configuration.
 
 
 
-The project uses standard compiler, build-system and development tools. Their respective licences and versions should be checked before redistribution. No commercial solver or paid CAD application is required by the prototype.
+\## Development Tools
 
 
 
-6\. BUILD ENVIRONMENT
+Python, Matplotlib and NumPy may be used during development and plot generation. They are not runtime dependencies of the packaged C++ application.
 
 
 
-The final Windows application was configured and built using CMake and Microsoft Visual Studio C++ Build Tools.
+\## Licence Information
+
+
+
+No third-party C++ libraries are bundled with the application.
+
+
+
+CMake, the compiler toolchain, Windows SDK, VS Code extensions and web browsers are separately licensed products. Their respective licence terms apply.
+
+
+
+This document describes the dependencies identified for the current project. It is not a substitute for a complete third-party licence audit.
 

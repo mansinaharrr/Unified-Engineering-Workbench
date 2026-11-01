@@ -1,126 +1,88 @@
-ARCHITECTURE DOCUMENT
+\# System Architecture
 
 
 
-1\. PROJECT STRUCTURE
+\## 1. Project Structure
 
 
 
-include/uew.hpp
+The Unified Engineering Workbench is organized into independent C++ modules supported by a static web dashboard.
 
-Contains the public C++17 module interfaces.
 
 
+\- include/: Public C++ interfaces.
 
-src/thermal
+\- src/thermal/: Thermal finite-element solver and analytical comparison.
 
-Implements a one-dimensional linear-element finite element solver and analytical comparison.
+\- src/geometry/: ASCII STL parsing and nodal CSV validation.
 
+\- src/performance/: Serial and parallel benchmarking.
 
+\- src/hardware/: Simulated embedded device interfaces.
 
-src/geometry
+\- src/backpropagation/: Gradient calculation and verification.
 
-Handles ASCII STL geometry parsing, bounding-box calculations and nodal CSV validation.
+\- src/main.cpp: Command-line application entry point.
 
+\- tests/: Automated C++ tests.
 
+\- frontend/: HTML, CSS and JavaScript dashboard.
 
-src/performance
+\- data/: Sample geometry and synthetic temperature data.
 
-Implements independent-case benchmarking with serial and parallel worker execution.
+\- results/: Numerical outputs, plots and console logs.
 
+\- docs/: Technical documentation and assessment evidence.
 
 
-src/hardware
 
-Provides simulated MCU, FPGA and JTAG adapters with a recoverable timeout mechanism.
+\## 2. Execution Flow
 
 
 
-src/backpropagation
+The C++ modules are executed independently through the command-line application located at dist/bin/uew.exe.
 
-Implements one-sample gradient calculation, parameter updates, finite-difference verification and training history.
 
 
+The Windows launcher, dist/Launch.exe, opens the local dashboard using the default browser.
 
-src/main.cpp
 
-Provides the command-line entry point for executing individual modules.
 
+\## 3. Module Responsibilities
 
 
-tests
 
-Contains automated integration tests executed through CTest.
+The thermal module calculates temperature distributions using a one-dimensional finite-element approach.
 
 
 
-frontend
+The geometry module reads ASCII STL files and validates nodal temperature CSV data.
 
-Contains the HTML, CSS and JavaScript files for the engineering dashboard.
 
 
+The performance module compares serial and parallel execution using deterministic workloads.
 
-data
 
-Contains sample geometry and synthetic temperature data.
 
+The hardware module simulates MCU, FPGA and JTAG device interactions.
 
 
-results
 
-Contains generated CSV files, plots, benchmark evidence and environment information.
+The backpropagation module calculates gradients, updates parameters and verifies gradients using finite differences.
 
 
 
+\## 4. Frontend and Backend Relationship
 
 
-2\. SYSTEM DESIGN
 
+The frontend is a static dashboard prototype. It is not currently connected to the C++ command-line backend. The engineering computations are executed separately through the command-line application.
 
 
-The C++ core is organized into independent modules. Each module performs a specific engineering function and can be executed through the command-line interface.
 
+\## 5. Hardware Simulation
 
 
-CMake manages the project configuration and build process. The Windows launcher opens the browser-based dashboard from the packaged frontend directory.
 
-
-
-The frontend provides a visual overview of the workbench modules and their results.
-
-
-
-
-
-3\. INTEGRATION STATUS
-
-
-
-The C++ core and frontend are currently separate components.
-
-
-
-The frontend is a static dashboard prototype and is not connected to a live C++ transport or API. Engineering calculations are executed through the command-line application.
-
-
-
-The hardware interfaces are simulated and do not communicate with physical devices.
-
-
-
-These limitations are documented accurately and are not represented as completed functionality.
-
-
-
-
-
-4\. BUILD AND EXECUTION
-
-
-
-The project uses C++17 and CMake and was built on Windows using Microsoft Visual Studio C++ Build Tools.
-
-
-
-The packaged application includes the Windows launcher, command-line executable, frontend, sample data, documentation and results.
+Embedded interfaces are simulated in software. No physical hardware communication or firmware programming is performed.
 

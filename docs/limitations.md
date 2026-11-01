@@ -1,9 +1,15 @@
-# Known limitations and honest status
+# Known Limitations
 
-1. The workspace used to build this deliverable is Linux. A native Windows 11 x64 `Launch.exe` cannot be produced or clean-machine-verified here. `scripts/build_windows.bat` is provided for a Windows build host; its output must be tested on a clean Windows 11 x64 machine. The script does not create or mislabel a `Launch.exe` GUI launcher.
-2. The delivered executable is a C++ command-line workbench. `frontend/` is a polished static UI concept but does not yet call the C++ backend. Therefore the one-coherent-interface and responsive live progress requirements are not fully met.
-3. STL support is ASCII STL only. Binary STL is out of scope. CSV is strictly validated against the exact required header. Mesh rendering, camera controls, 3D point-cloud rendering and node inspection are not implemented in the static UI.
-4. Hardware behaviour is simulated. No physical boards, pinout validation, firmware, PCB or FPGA programming were performed.
-5. Benchmark measurements are host-specific and include worker creation in the timed region. The one-worker case is serial; two/four-worker cases use a bounded number of standard threads. Timing data is an observed run, not a performance guarantee.
-6. The handwritten derivation is supplied as a typed study appendix. The candidate must manually reproduce it legibly and submit their own scan/photo; no handwritten evidence is fabricated.
-7. The ZIP is a source-and-Linux-build prototype. Final Windows packaging, runtime dependency audit and clean-machine launch validation remain to be done.
+1. Dashboard: The packaged Windows launcher opens the local static dashboard in the default browser. The dashboard and C++ command-line executable are separate; there is no live frontend-to-backend connection.
+
+2. 3D Visualization: ASCII STL parsing and bounding-box calculation are implemented. Interactive triangle rendering, rotate, pan, zoom, fit-to-view, temperature point-cloud rendering, colour legend and node inspection are not implemented.
+
+3. CSV Data: The required nodal CSV schema is validated. The supplied temperature dataset is synthetic and is not an ANSYS export.
+
+4. Embedded Hardware: MCU, FPGA and JTAG behaviour is simulated in software. No physical hardware communication or firmware programming is performed.
+
+5. Benchmarking: Performance measurements depend on the host system. Worker creation is included in the timed region, so results may vary between runs.
+
+6. Windows Packaging: The supplied launcher and CLI executable were built and the launcher was manually checked after extraction on the development machine. A separate clean-machine test was not performed.
+
+7. Demo Evidence: A separate timestamped screenshot walkthrough or demo video must accompany the final submission.
