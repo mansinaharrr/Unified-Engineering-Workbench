@@ -1,11 +1,688 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unified Engineering Workbench</title><link rel="stylesheet" href="style.css"></head>
-<body><aside><div class="brand">UEW <small>ENGINEERING WORKBENCH</small></div><nav><button class="active" data-page="overview">Overview</button><button data-page="geometry">Geometry</button><button data-page="thermal">Thermal Analysis</button><button data-page="performance">Performance</button><button data-page="hardware">Hardware</button><button data-page="backprop">Backpropagation</button><button data-page="reports">Reports</button></nav><div class="sidefoot">PASS SCIENCE WORKS<br>R&amp;D INTERNSHIP 2026–27</div></aside>
-<main><header><div><span class="eyebrow">ENGINEERING / WORKSPACE</span><h1 id="heading">Overview</h1></div><span class="status">● Prototype workspace</span></header>
-<section id="overview" class="page show"><div class="hero"><div><span class="eyebrow">UNIFIED ENGINEERING WORKBENCH</span><h2>One workspace.<br>Five engineering disciplines.</h2><p>Import geometry, solve thermal models, measure multicore workloads and explore embedded interfaces.</p></div><div class="hero-mark">UEW<span>01</span></div></div><div class="cards"><article><label>01 / GEOMETRY</label><h3>Geometry viewer</h3><p>ASCII STL mesh and nodal temperature CSV inspection.</p><button data-go="geometry">Open module ↗</button></article><article><label>02 / SIMULATION</label><h3>Thermal FEA</h3><p>1D steady-state finite element analysis with convergence.</p><button data-go="thermal">Open module ↗</button></article><article><label>03 / COMPUTE</label><h3>Performance</h3><p>Deterministic serial and worker-pool benchmarking.</p><button data-go="performance">Open module ↗</button></article><article><label>04 / EMBEDDED</label><h3>Hardware lab</h3><p>Host-connected microcontroller, FPGA and JTAG mock adapters.</p><button data-go="hardware">Open module ↗</button></article></div></section>
-<section id="geometry" class="page"><div class="panel"><h2>Geometry import</h2><p>Backend parser supports ASCII STL and nodal temperature CSV. Use the bundled sample files.</p><div class="split"><div><h3>STL mesh</h3><p class="muted">data/sample_geometry.stl · ASCII STL · metres</p><pre>Triangles · 4<br>Bounds · 0 to 1 m</pre></div><div><h3>Temperature nodes</h3><p class="muted">data/sample_temperature.csv · synthetic dataset</p><pre>Columns · node_id, x, y, z, temperature<br>Units · m, °C</pre></div></div><p class="notice">Interactive 3D rendering and browser-to-C++ transport are not yet wired in this prototype build. The C++ parsers are implemented and tested.</p></div></section>
-<section id="thermal" class="page"><div class="panel"><h2>Thermal analysis</h2><p>Steady-state 1D rod · two-node linear elements · insulated lateral surface</p><div class="metrics"><div><label>LENGTH</label><b>1.0 m</b></div><div><label>AREA</label><b>1 × 10⁻⁴ m²</b></div><div><label>CONDUCTIVITY</label><b>10 W/(m·K)</b></div><div><label>HEAT GENERATION</label><b>10,000 W/m³</b></div></div><table><thead><tr><th>Elements</th><th>Max midpoint error (°C)</th></tr></thead><tbody id="mesh"></tbody></table><canvas id="thermalChart" width="850" height="300"></canvas><p class="muted">Run <code>uew thermal</code> to regenerate CSV results.</p></div></section>
-<section id="performance" class="page"><div class="panel"><h2>Multicore benchmark</h2><p>Fixed-seed batch generation · independent thermal cases · five measured repetitions.</p><div class="metrics"><div><label>WORKERS</label><b>1 / 2 / 4</b></div><div><label>REPETITIONS</label><b>5</b></div><div><label>SEED</label><b>20261031</b></div><div><label>AGREEMENT</label><b>≤ 1e-8 °C</b></div></div><p class="notice">Actual timings depend on the host CPU. Run <code>uew benchmark 2000 80</code> to collect machine-specific results.</p></div></section>
-<section id="hardware" class="page"><div class="panel"><h2>Embedded integration lab</h2><div class="cards"><article><label>MCU / MOCK</label><h3>STM32 Nucleo</h3><p>USB CDC telemetry · 3.3 V GPIO</p></article><article><label>FPGA / MOCK</label><h3>Basys 3</h3><p>JTAG configuration/debug · 3.3 V I/O</p></article><article><label>DEBUG / MOCK</label><h3>USB-JTAG adapter</h3><p>TCK / TMS / TDI / TDO</p></article></div><p class="notice">All device responses are simulated. No physical board is connected.</p><pre>HOST PC ── USB ── MCU (telemetry)<br>HOST PC ── USB ── JTAG adapter ── JTAG ── FPGA<br>Common reference ground; verify each board's I/O bank voltage before wiring.</pre></div></section>
-<section id="backprop" class="page"><div class="panel"><h2>Single-sample backpropagation</h2><p>h = tanh(wx + b) · ŷ = vh + c · J = ½(ŷ − y)²</p><pre>Initial parameters: w=0.5, b=0, v=1, c=0<br>Learning rate: 0.1<br>Gradient checks: central finite differences, ε=1e-6</pre><p class="notice">Run <code>uew backprop</code> for numerical gradients, simultaneous parameter update and 100-step loss CSV.</p></div></section>
-<section id="reports" class="page"><div class="panel"><h2>Project evidence</h2><ul><li>Thermal mesh convergence CSV and plot</li><li>Five-repetition multicore benchmark output</li><li>Backpropagation gradients and loss history</li><li>Automated C++ unit tests</li><li>Architecture, assumptions and limitations report</li></ul></div></section>
-<footer>UEW · C++17 CORE · BUILD 1.0.0 · ENGINEERING PROTOTYPE</footer></main><script src="app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Engineering Workbench</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">UE</div>
+            <div>
+                <strong>Engineering</strong>
+                <small>Unified Workbench</small>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav>
+            <button class="active" data-page="overview">
+                <span>01</span> Overview
+            </button>
+            <button data-page="geometry">
+                <span>02</span> Geometry
+            </button>
+            <button data-page="thermal">
+                <span>03</span> Thermal analysis
+            </button>
+            <button data-page="performance">
+                <span>04</span> Performance
+            </button>
+            <button data-page="hardware">
+                <span>05</span> Hardware
+            </button>
+            <button data-page="backprop">
+                <span>06</span> Backpropagation
+            </button>
+            <button data-page="reports">
+                <span>07</span> Reports
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-line"></div>
+            <p>PASS SCIENCE WORKS</p>
+            <small>R&D INTERNSHIP · 2026–27</small>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <!-- OVERVIEW -->
+
+        <section id="overview" class="page show">
+
+            <div class="welcome">
+                <div>
+                    <p class="section-label">PROJECT OVERVIEW</p>
+                    <h2>Unified Engineering Workbench</h2>
+                    <p>
+                        A C++17 engineering environment for geometry inspection,
+                        thermal simulation, performance testing and embedded
+                        system modelling.
+                    </p>
+                </div>
+                <div class="welcome-tag">C++17</div>
+            </div>
+
+            <div class="section-heading">
+                <div>
+                    <h2>Engineering modules</h2>
+                    <p>Choose a module to explore its implementation and results.</p>
+                </div>
+            </div>
+
+            <div class="module-grid">
+
+                <article class="module-card">
+                    <div class="module-top">
+                        <span class="module-number">01</span>
+                        <span class="module-category">GEOMETRY</span>
+                    </div>
+                    <h3>Geometry inspection</h3>
+                    <p>
+                        Read ASCII STL meshes, calculate geometric bounds
+                        and validate nodal temperature data.
+                    </p>
+                    <button class="text-button" data-go="geometry">
+                        Open module <span>→</span>
+                    </button>
+                </article>
+
+                <article class="module-card">
+                    <div class="module-top">
+                        <span class="module-number">02</span>
+                        <span class="module-category">SIMULATION</span>
+                    </div>
+                    <h3>Thermal analysis</h3>
+                    <p>
+                        Solve a one-dimensional steady-state thermal problem
+                        using linear finite elements.
+                    </p>
+                    <button class="text-button" data-go="thermal">
+                        Open module <span>→</span>
+                    </button>
+                </article>
+
+                <article class="module-card">
+                    <div class="module-top">
+                        <span class="module-number">03</span>
+                        <span class="module-category">COMPUTING</span>
+                    </div>
+                    <h3>Performance testing</h3>
+                    <p>
+                        Compare serial and parallel execution across
+                        different worker counts.
+                    </p>
+                    <button class="text-button" data-go="performance">
+                        Open module <span>→</span>
+                    </button>
+                </article>
+
+                <article class="module-card">
+                    <div class="module-top">
+                        <span class="module-number">04</span>
+                        <span class="module-category">EMBEDDED</span>
+                    </div>
+                    <h3>Hardware interface</h3>
+                    <p>
+                        Explore the STM32, FPGA and JTAG interface
+                        through software simulations.
+                    </p>
+                    <button class="text-button" data-go="hardware">
+                        Open module <span>→</span>
+                    </button>
+                </article>
+
+                <article class="module-card">
+                    <div class="module-top">
+                        <span class="module-number">05</span>
+                        <span class="module-category">MACHINE LEARNING</span>
+                    </div>
+                    <h3>Backpropagation</h3>
+                    <p>
+                        Calculate neural network gradients and verify
+                        them using finite differences.
+                    </p>
+                    <button class="text-button" data-go="backprop">
+                        Open module <span>→</span>
+                    </button>
+                </article>
+
+                <article class="module-card">
+                    <div class="module-top">
+                        <span class="module-number">06</span>
+                        <span class="module-category">DOCUMENTATION</span>
+                    </div>
+                    <h3>Project reports</h3>
+                    <p>
+                        Review technical documentation, test results,
+                        plots and supporting evidence.
+                    </p>
+                    <button class="text-button" data-go="reports">
+                        Open module <span>→</span>
+                    </button>
+                </article>
+
+            </div>
+
+            <div class="overview-note">
+                <strong>Development note</strong>
+                <p>
+                    The C++ modules are built and tested independently.
+                    The browser interface is currently a static frontend
+                    prototype and does not directly invoke the C++ backend.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- GEOMETRY -->
+
+        <section id="geometry" class="page">
+
+            <div class="page-intro">
+                <h2>Geometry inspection</h2>
+                <p>
+                    Inspect the sample mesh and nodal temperature dataset.
+                </p>
+            </div>
+
+            <div class="content-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>STL mesh information</h3>
+                        <p>data/sample_geometry.stl</p>
+                    </div>
+                    <span class="tag">ASCII STL</span>
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span>Triangles</span>
+                        <strong>4</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>X-axis bounds</span>
+                        <strong>0 – 1 m</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Y-axis bounds</span>
+                        <strong>0 – 1 m</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Z-axis bounds</span>
+                        <strong>0 – 1 m</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Temperature dataset</h3>
+                        <p>data/sample_temperature.csv</p>
+                    </div>
+                    <span class="tag">CSV</span>
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span>Validated nodes</span>
+                        <strong>11</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Position unit</span>
+                        <strong>Metres</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Temperature unit</span>
+                        <strong>°C</strong>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>node_id</td>
+                                <td>Node identifier</td>
+                            </tr>
+                            <tr>
+                                <td>x, y, z</td>
+                                <td>Spatial coordinates</td>
+                            </tr>
+                            <tr>
+                                <td>temperature</td>
+                                <td>Temperature at the node</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="notice">
+                <strong>Implementation status</strong>
+                <p>
+                    ASCII STL parsing and CSV validation are implemented
+                    in the C++ backend. Interactive 3D rendering and
+                    browser-to-backend communication are not implemented.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- THERMAL -->
+
+        <section id="thermal" class="page">
+
+            <div class="page-intro">
+                <h2>Thermal analysis</h2>
+                <p>
+                    One-dimensional steady-state heat conduction using
+                    two-node linear finite elements.
+                </p>
+            </div>
+
+            <div class="content-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Model parameters</h3>
+                        <p>Thermal simulation configuration</p>
+                    </div>
+                    <span class="tag">1D FEM</span>
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span>Rod length</span>
+                        <strong>1.0 m</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Cross-sectional area</span>
+                        <strong>1 × 10⁻⁴ m²</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Conductivity</span>
+                        <strong>10 W/(m·K)</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Heat generation</span>
+                        <strong>10,000 W/m³</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Mesh convergence</h3>
+                        <p>Maximum midpoint interpolation error</p>
+                    </div>
+                    <span class="tag">°C</span>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Elements</th>
+                                <th>Maximum error (°C)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mesh"></tbody>
+                    </table>
+                </div>
+
+                <div class="chart-heading">
+                    <h3>Convergence trend</h3>
+                    <span>Element count vs error</span>
+                </div>
+
+                <canvas id="thermalChart" width="850" height="300"></canvas>
+
+                <p class="chart-caption">
+                    Error values are taken from the Windows C++ FEM execution.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- PERFORMANCE -->
+
+        <section id="performance" class="page">
+
+            <div class="page-intro">
+                <h2>Performance testing</h2>
+                <p>
+                    Serial and parallel execution comparison on the
+                    current Windows development machine.
+                </p>
+            </div>
+
+            <div class="content-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Benchmark configuration</h3>
+                        <p>Windows execution results</p>
+                    </div>
+                    <span class="tag">1000 cases</span>
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span>Test cases</span>
+                        <strong>1,000</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Elements per case</span>
+                        <strong>80</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Worker counts</span>
+                        <strong>1 / 2 / 4</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Maximum difference</span>
+                        <strong>0 °C</strong>
+                    </div>
+                </div>
+
+                <h3 class="subheading">Measured results</h3>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Workers</th>
+                                <th>Median time (ms)</th>
+                                <th>Speedup</th>
+                                <th>Efficiency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>1.3430</td>
+                                <td>1.00×</td>
+                                <td>100%</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>1.3649</td>
+                                <td>0.983955×</td>
+                                <td>49.20%</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>0.8155</td>
+                                <td>1.64684×</td>
+                                <td>41.17%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="notice">
+                    <strong>Observation</strong>
+                    <p>
+                        Four workers achieved approximately 1.65× speedup.
+                        Two workers were slightly slower than serial execution,
+                        indicating that parallel overhead can affect smaller
+                        workloads.
+                    </p>
+                </div>
+
+                <p class="chart-caption">
+                    These are measurements from the current Windows run.
+                    Results may vary on other processors and systems.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- HARDWARE -->
+
+        <section id="hardware" class="page">
+
+            <div class="page-intro">
+                <h2>Embedded hardware</h2>
+                <p>
+                    Device interfaces and communication concepts
+                    represented through software mocks.
+                </p>
+            </div>
+
+            <div class="hardware-grid">
+
+                <article class="hardware-card">
+                    <span class="tag">MICROCONTROLLER · MOCK</span>
+                    <h3>STM32 Nucleo</h3>
+                    <p>USB CDC telemetry</p>
+                    <p>3.3 V GPIO</p>
+                </article>
+
+                <article class="hardware-card">
+                    <span class="tag">FPGA · MOCK</span>
+                    <h3>Basys 3</h3>
+                    <p>JTAG configuration and debugging</p>
+                    <p>3.3 V I/O</p>
+                </article>
+
+                <article class="hardware-card">
+                    <span class="tag">DEBUG ADAPTER · MOCK</span>
+                    <h3>USB-JTAG adapter</h3>
+                    <p>TCK / TMS / TDI / TDO</p>
+                    <p>Host USB interface</p>
+                </article>
+
+            </div>
+
+            <div class="content-panel">
+                <h3>Interface overview</h3>
+
+                <div class="connection">
+                    <div class="connection-node">HOST PC</div>
+                    <span>USB</span>
+                    <div class="connection-node">STM32</div>
+                    <small>Telemetry</small>
+                </div>
+
+                <div class="connection">
+                    <div class="connection-node">HOST PC</div>
+                    <span>USB</span>
+                    <div class="connection-node">JTAG adapter</div>
+                    <span>JTAG</span>
+                    <div class="connection-node">FPGA</div>
+                </div>
+
+                <div class="notice">
+                    <strong>Simulation notice</strong>
+                    <p>
+                        All device responses and telemetry are simulated.
+                        No physical STM32, FPGA or JTAG hardware was
+                        connected during testing.
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- BACKPROPAGATION -->
+
+        <section id="backprop" class="page">
+
+            <div class="page-intro">
+                <h2>Backpropagation</h2>
+                <p>
+                    Single-sample neural network with analytical
+                    gradient verification.
+                </p>
+            </div>
+
+            <div class="content-panel">
+                <h3>Network model</h3>
+
+                <div class="formula">
+                    h = tanh(wx + b)
+                    <br>
+                    ŷ = vh + c
+                    <br>
+                    J = ½(ŷ − y)²
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span>Learning rate</span>
+                        <strong>0.1</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Finite difference ε</span>
+                        <strong>10⁻⁶</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Hidden activation</span>
+                        <strong>tanh</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Loss function</span>
+                        <strong>Squared error</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <h3>Gradient verification</h3>
+                <p class="panel-description">
+                    Analytical gradients compared with central
+                    finite-difference estimates.
+                </p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Backpropagation</th>
+                                <th>Finite difference</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>w</td>
+                                <td>-1.20946447524</td>
+                                <td>-1.20946447513</td>
+                            </tr>
+                            <tr>
+                                <td>b</td>
+                                <td>-1.20946447524</td>
+                                <td>-1.20946447513</td>
+                            </tr>
+                            <tr>
+                                <td>v</td>
+                                <td>-0.710682047486</td>
+                                <td>-0.710682047433</td>
+                            </tr>
+                            <tr>
+                                <td>c</td>
+                                <td>-1.53788284274</td>
+                                <td>-1.53788284263</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="notice">
+                    <strong>Verification result</strong>
+                    <p>
+                        Analytical and numerical gradient values
+                        closely agree for all four parameters.
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- REPORTS -->
+
+        <section id="reports" class="page">
+
+            <div class="page-intro">
+                <h2>Project documentation</h2>
+                <p>
+                    Supporting files and evidence generated during
+                    project development.
+                </p>
+            </div>
+
+            <div class="content-panel">
+                <h3>Available project evidence</h3>
+
+                <div class="report-list">
+
+                    <div class="report-item">
+                        <div>
+                            <strong>Technical report</strong>
+                            <p>Architecture, implementation and results</p>
+                        </div>
+                        <span>PDF</span>
+                    </div>
+
+                    <div class="report-item">
+                        <div>
+                            <strong>Thermal convergence</strong>
+                            <p>Mesh error results and plots</p>
+                        </div>
+                        <span>CSV / PNG</span>
+                    </div>
+
+                    <div class="report-item">
+                        <div>
+                            <strong>Performance benchmark</strong>
+                            <p>Serial and parallel execution results</p>
+                        </div>
+                        <span>CSV / PNG</span>
+                    </div>
+
+                    <div class="report-item">
+                        <div>
+                            <strong>Backpropagation results</strong>
+                            <p>Gradient verification and loss history</p>
+                        </div>
+                        <span>CSV / TXT</span>
+                    </div>
+
+                    <div class="report-item">
+                        <div>
+                            <strong>Architecture documentation</strong>
+                            <p>System design and implementation notes</p>
+                        </div>
+                        <span>MD</span>
+                    </div>
+
+                </div>
+
+                <p class="chart-caption">
+                    Refer to the docs and results folders in the
+                    project distribution for the actual files.
+                </p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
