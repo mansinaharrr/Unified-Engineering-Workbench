@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Packaged Workbench",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/dist/Launch.exe",
+      "cwd": "${workspaceFolder}/dist",
+      "args": [],
+      "stopAtEntry": false
+    }
+  ]
+}
